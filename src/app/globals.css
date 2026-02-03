@@ -1,26 +1,44 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f2ea;
+  --foreground: #14110e;
+  --ink-muted: #5a4f47;
+  --ink-subtle: #8b7f74;
+  --paper: #fffaf2;
+  --paper-edge: #efe4d3;
+  --accent: #c24914;
+  --accent-strong: #8f2d0b;
+  --accent-soft: #f3c5a9;
+  --surface: #fff6ea;
+  --shadow: 18px 28px 60px rgba(48, 34, 24, 0.18);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-body);
 }
 
 body {
-  background: var(--background);
+  background: radial-gradient(
+      circle at 15% 20%,
+      rgba(255, 246, 234, 0.9),
+      rgba(247, 242, 234, 0.9) 50%,
+      rgba(234, 226, 210, 0.9) 100%
+    ),
+    linear-gradient(135deg, #f7f2ea, #efe6d8);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), "Trebuchet MS", sans-serif;
+  letter-spacing: -0.01em;
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
