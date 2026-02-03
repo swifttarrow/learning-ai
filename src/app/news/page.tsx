@@ -1,4 +1,6 @@
 import PageLayout from "@/components/PageLayout";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getNewsSummaries } from "@/lib/data/news";
 import NewsClient from "./NewsClient";
 
@@ -7,22 +9,24 @@ export default async function NewsPage() {
 
   return (
     <PageLayout>
-      <main className="rounded-[36px] border border-[var(--paper-edge)] bg-[var(--paper)] p-8 shadow-[var(--shadow)]">
-        <div className="mb-6 flex items-center justify-between">
+      <Card className="rounded-[36px] border-[var(--paper-edge)] bg-[var(--paper)] shadow-[var(--shadow)]">
+        <CardHeader className="flex flex-row items-start justify-between gap-4 p-8">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-[var(--ink-subtle)]">
+            <CardTitle className="text-xs uppercase tracking-[0.3em] text-[var(--ink-subtle)]">
               AI News
-            </p>
+            </CardTitle>
             <h1 className="mt-2 font-[var(--font-display)] text-3xl text-[var(--foreground)]">
               Builder relevance feed
             </h1>
           </div>
-          <div className="rounded-full bg-[var(--surface)] px-4 py-2 text-xs uppercase tracking-[0.25em] text-[var(--ink-subtle)]">
+          <Badge className="bg-[var(--surface)] text-[var(--ink-subtle)]">
             Updated daily
-          </div>
-        </div>
-        <NewsClient items={items} />
-      </main>
+          </Badge>
+        </CardHeader>
+        <CardContent className="px-8 pb-8">
+          <NewsClient items={items} />
+        </CardContent>
+      </Card>
     </PageLayout>
   );
 }

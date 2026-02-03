@@ -1,16 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/", label: "Overview" },
-  { href: "/learn", label: "Learn" },
-  { href: "/news", label: "AI News" },
+  { href: "/", label: "Overview", value: "overview" },
+  { href: "/learn", label: "Learn", value: "learn" },
+  { href: "/news", label: "AI News", value: "news" },
 ];
 
 export default function PrimaryNav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const activeValue =
+    links.find((link) => link.href === pathname)?.value ?? "overview";
 
   return (
     <nav className="flex flex-wrap items-center justify-between gap-6">
@@ -19,32 +24,43 @@ export default function PrimaryNav() {
           AE
         </span>
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-[var(--ink-subtle)]">
+          <Badge
+            variant="outline"
+            className="border-[var(--paper-edge)] bg-white/70 text-[10px] uppercase tracking-[0.3em] text-[var(--ink-subtle)]"
+          >
             AI-native engineer
-          </p>
+          </Badge>
           <p className="text-lg font-semibold text-[var(--foreground)]">
             Learning App
           </p>
         </div>
       </div>
-      <div className="flex flex-wrap gap-2 rounded-full bg-[var(--surface)] p-2 shadow-[inset_0_0_0_1px_rgba(74,54,40,0.08)]">
-        {links.map((link) => {
-          const active = pathname === link.href;
-          return (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                active
-                  ? "bg-[var(--accent-soft)] text-[var(--accent-strong)] shadow-[inset_0_0_0_1px_rgba(194,73,20,0.25)]"
-                  : "text-[var(--ink-muted)] hover:text-[var(--foreground)]"
-              }`}
+      <Tabs
+        value={activeValue}
+        onValueChange={(value) => {
+          const target = links.find((link) => link.value === value);
+          if (target) router.push(target.href);
+        }}
+        className="w-auto"
+      >
+        <TabsList
+          variant="line"
+          className="h-auto rounded-full border border-[var(--paper-edge)] bg-[var(--surface)] p-1.5"
+        >
+          {links.map((link) => (
+            <TabsTrigger
+              key={link.value}
+              value={link.value}
+              className={cn(
+                "rounded-full px-4 text-sm font-medium text-[var(--ink-muted)] hover:text-[var(--foreground)]",
+                "data-[state=active]:bg-[var(--accent-soft)] data-[state=active]:text-[var(--accent-strong)] data-[state=active]:shadow-[inset_0_0_0_1px_rgba(194,73,20,0.25)]"
+              )}
             >
               {link.label}
-            </Link>
-          );
-        })}
-      </div>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
     </nav>
   );
 }
