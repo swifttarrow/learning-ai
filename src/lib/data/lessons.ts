@@ -139,6 +139,6 @@ export async function getLatestLessons(
       createdAt: row.created_at,
     },
     conceptTitle:
-      row.concepts?.title ?? (row.content as LessonContent)?.title ?? "Lesson",
+      row.concepts?.[0]?.title ?? (row.content as LessonContent)?.title ?? "Lesson",
   }));
 }

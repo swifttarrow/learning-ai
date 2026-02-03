@@ -37,6 +37,24 @@ export default function LearnClient({
     }
   }, [concepts, selectedId]);
 
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent).detail as
+        | { lesson: LessonRecord; concept: Concept }
+        | undefined;
+      if (!detail?.lesson || !detail?.concept) return;
+      setLesson(detail.lesson);
+      setConcepts((prev) => {
+        const exists = prev.some((item) => item.id === detail.concept.id);
+        return exists ? prev : [...prev, detail.concept];
+      });
+      setSelectedId(detail.concept.id);
+    };
+
+    window.addEventListener("lesson:generated", handler);
+    return () => window.removeEventListener("lesson:generated", handler);
+  }, []);
+
   const handleSelect = async (conceptId: string) => {
     setSelectedId(conceptId);
     setError(null);

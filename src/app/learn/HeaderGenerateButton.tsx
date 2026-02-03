@@ -10,11 +10,17 @@ export default function HeaderGenerateButton() {
 
   const handleGenerate = () => {
     startTransition(async () => {
-      await fetch("/api/lessons", {
+      const response = await fetch("/api/lessons", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
       });
+      const data = await response.json().catch(() => null);
+      if (response.ok && data?.lesson && data?.concept) {
+        window.dispatchEvent(
+          new CustomEvent("lesson:generated", { detail: data })
+        );
+      }
       router.refresh();
     });
   };
