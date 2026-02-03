@@ -16,6 +16,7 @@ export type LessonContent = {
   title: string;
   why_it_matters: string;
   core_explanation: string[];
+  deep_dive?: string[];
   examples: string[];
   common_pitfalls: string[];
   exercises: string[];

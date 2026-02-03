@@ -17,19 +17,37 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const conceptId = body?.conceptId as string | undefined;
-  const content = body?.content;
+  try {
+    const body = await request.json();
+    const conceptId = body?.conceptId as string | undefined;
+    const content = body?.content;
 
-  if (!conceptId) {
-    return NextResponse.json(
-      { error: "conceptId is required" },
-      { status: 400 }
-    );
+    if (!content && !process.env.OPENAI_API_KEY) {
+      return NextResponse.json(
+        { error: "OPENAI_API_KEY is not set on the server." },
+        { status: 500 }
+      );
+    }
+
+    if (content && !conceptId) {
+      return NextResponse.json(
+        { error: "conceptId is required when supplying content." },
+        { status: 400 }
+      );
+    }
+
+    const result = content
+      ? await createLesson(conceptId as string, content)
+      : await generateLesson(conceptId);
+
+    if ("lesson" in result) {
+      return NextResponse.json({ lesson: result.lesson, concept: result.concept });
+    }
+
+    return NextResponse.json({ lesson: result });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Unknown server error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  const lesson = content
-    ? await createLesson(conceptId, content)
-    : await generateLesson(conceptId);
-  return NextResponse.json({ lesson });
 }

@@ -1,7 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
-import { concepts } from "./concepts";
-import { buildLessonContent } from "./lessonGenerator";
-import type { LessonContent, LessonRecord } from "./types";
+import { generateConceptFromModel } from "@/lib/ai/conceptFromModel";
+import { createConcept, getConceptById, getConcepts } from "./concepts";
+import { generateLessonFromModel } from "@/lib/ai/lessonFromModel";
+import type { Concept, LessonContent, LessonRecord } from "./types";
 
 const memoryLessons = new Map<string, LessonRecord>();
 
@@ -79,12 +80,65 @@ export async function createLesson(
   };
 }
 
-export async function generateLesson(conceptId: string): Promise<LessonRecord> {
-  const concept = concepts.find((item) => item.id === conceptId);
-  if (!concept) {
+export async function generateLesson(
+  conceptId?: string
+): Promise<{ lesson: LessonRecord; concept: Concept }> {
+  let concept = conceptId ? await getConceptById(conceptId) : null;
+
+  if (!concept && conceptId) {
     throw new Error("Unknown concept.");
   }
 
-  const content = buildLessonContent(concept);
-  return createLesson(conceptId, content);
+  if (!concept) {
+    const existing = await getConcepts();
+    const generated = await generateConceptFromModel(existing);
+    concept = await createConcept(generated);
+  }
+
+  const content = await generateLessonFromModel(concept);
+  const lesson = await createLesson(concept.id, content);
+  return { lesson, concept };
+}
+
+export async function getLatestLessons(
+  limit = 3
+): Promise<Array<{ lesson: LessonRecord; conceptTitle: string }>> {
+  if (!isSupabaseConfigured) {
+    const lessons = Array.from(memoryLessons.values()).sort((a, b) =>
+      a.createdAt < b.createdAt ? 1 : -1
+    );
+    const latest = lessons.slice(0, limit);
+    const results = await Promise.all(
+      latest.map(async (lesson) => {
+        const concept = await getConceptById(lesson.conceptId);
+        return {
+          lesson,
+          conceptTitle: concept?.title ?? lesson.content.title,
+        };
+      })
+    );
+    return results;
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("lessons")
+    .select("id, concept_id, content, created_at, concepts(title)")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((row) => ({
+    lesson: {
+      id: row.id,
+      conceptId: row.concept_id,
+      content: row.content as LessonContent,
+      createdAt: row.created_at,
+    },
+    conceptTitle:
+      row.concepts?.title ?? (row.content as LessonContent)?.title ?? "Lesson",
+  }));
 }

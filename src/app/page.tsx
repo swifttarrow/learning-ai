@@ -3,7 +3,6 @@ import PageLayout from "@/components/PageLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
   return (
@@ -32,13 +31,6 @@ export default function Home() {
               >
                 <Link href="/learn">Start learning</Link>
               </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="rounded-full border-[var(--paper-edge)] bg-white/70 text-[var(--foreground)] hover:border-[var(--accent-strong)] hover:text-[var(--accent-strong)]"
-              >
-                <Link href="/news">Scan AI news</Link>
-              </Button>
             </div>
             <Card className="border-[var(--paper-edge)] bg-[var(--surface)] shadow-none">
               <CardHeader className="pb-2">
@@ -53,48 +45,7 @@ export default function Home() {
               </CardContent>
             </Card>
           </section>
-          <section className="grid gap-4">
-            <Card className="border-[var(--paper-edge)] bg-white shadow-[0_18px_40px_rgba(48,34,24,0.15)]">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-xs uppercase tracking-[0.3em] text-[var(--ink-subtle)]">
-                  Today&apos;s focus
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-3">
-                <h2 className="font-[var(--font-display)] text-2xl text-[var(--foreground)]">
-                  Retrieval-augmented generation
-                </h2>
-                <p className="text-sm leading-6 text-[var(--ink-muted)]">
-                  Learn when to reach for RAG, how to evaluate it, and where
-                  teams usually misconfigure it in production.
-                </p>
-                <Separator className="bg-[var(--paper-edge)]" />
-                <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[var(--ink-subtle)]">
-                  <Badge className="bg-[var(--accent-soft)] text-[var(--accent-strong)]">
-                    Lesson
-                  </Badge>
-                  <span>Difficulty: intermediate</span>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-[var(--paper-edge)] bg-[var(--surface)] shadow-none">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-xs uppercase tracking-[0.3em] text-[var(--ink-subtle)]">
-                  News snapshot
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-3">
-                <h3 className="text-lg font-semibold text-[var(--foreground)]">
-                  Model vendors shift toward tool safety defaults
-                </h3>
-                <p className="text-sm leading-6 text-[var(--ink-muted)]">
-                  Keep an eye on tool gating updates and consider how they
-                  affect production workflows, evaluation suites, and guardrail
-                  designs.
-                </p>
-              </CardContent>
-            </Card>
-          </section>
+          <section className="grid gap-4" />
         </CardContent>
       </Card>
     </PageLayout>

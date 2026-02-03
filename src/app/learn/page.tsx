@@ -1,15 +1,16 @@
 import PageLayout from "@/components/PageLayout";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { concepts } from "@/lib/data/concepts";
+import { getConcepts } from "@/lib/data/concepts";
 import { getLessonByConcept } from "@/lib/data/lessons";
 import LearnClient from "./LearnClient";
+import HeaderGenerateButton from "./HeaderGenerateButton";
 
 type LearnPageProps = {
   searchParams: { concept?: string };
 };
 
 export default async function LearnPage({ searchParams }: LearnPageProps) {
+  const concepts = await getConcepts();
   const selectedId = searchParams.concept ?? concepts[0]?.id ?? "";
   const lesson = selectedId ? await getLessonByConcept(selectedId) : null;
 
@@ -25,13 +26,11 @@ export default async function LearnPage({ searchParams }: LearnPageProps) {
               Concept lessons
             </h1>
           </div>
-          <Badge className="bg-[var(--surface)] text-[var(--ink-subtle)]">
-            Schema-first lessons
-          </Badge>
+          <HeaderGenerateButton />
         </CardHeader>
         <CardContent className="px-8 pb-8">
           <LearnClient
-            concepts={concepts}
+            initialConcepts={concepts}
             initialLesson={lesson}
             initialConceptId={selectedId}
           />

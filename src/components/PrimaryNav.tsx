@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 const links = [
   { href: "/", label: "Overview", value: "overview" },
   { href: "/learn", label: "Learn", value: "learn" },
-  { href: "/news", label: "AI News", value: "news" },
 ];
 
 export default function PrimaryNav() {
